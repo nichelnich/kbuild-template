@@ -40,7 +40,6 @@
 #
 /tags
 /TAGS
-/myapp
 
 #
 # git files that we don't want to ignore even if they are dot-files
@@ -53,7 +52,7 @@
 #
 include/config
 include/generated
-arch/*/include/generated
+custom/*/include/generated
 
 # stgit generated dirs
 patches-*
@@ -84,3 +83,4 @@ all.config
 
 # Kdevelop4
 *.kdev4
+/build

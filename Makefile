@@ -203,8 +203,9 @@ VPATH		:= $(srctree)
 
 export srctree objtree VPATH
 
-ARCH		?= $(SUBARCH)
+ARCH ?= common
 CROSS_COMPILE	?= $(CONFIG_CROSS_COMPILE:"%"=%)
+SRCARCH     := $(ARCH)
 
 KCONFIG_CONFIG	?= .config
 export KCONFIG_CONFIG
@@ -279,7 +280,7 @@ KBUILD_AFLAGS   := -D__ASSEMBLY__
 KERNELVERSION = $(VERSION)$(if $(PATCHLEVEL),.$(PATCHLEVEL)$(if $(SUBLEVEL),.$(SUBLEVEL)))$(EXTRAVERSION)
 
 export VERSION PATCHLEVEL SUBLEVEL KERNELVERSION
-export ARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
+export ARCH SRCARCH CONFIG_SHELL HOSTCC HOSTCFLAGS CROSS_COMPILE AS LD CC
 export CPP AR NM STRIP OBJCOPY OBJDUMP
 export MAKE AWK PERL PYTHON
 export HOSTCXX HOSTCXXFLAGS CHECK CHECKFLAGS
@@ -382,7 +383,7 @@ ifeq ($(config-targets),1)
 # Read arch specific Makefile to set KBUILD_DEFCONFIG as needed.
 # KBUILD_DEFCONFIG may point out an alternative default configuration
 # used for 'make defconfig'
--include arch/$(ARCH)/Makefile
+-include custom/$(ARCH)/Makefile
 export KBUILD_DEFCONFIG KBUILD_KCONFIG
 
 config: scripts_basic outputmakefile FORCE
@@ -438,7 +439,7 @@ all: myapp
 ARCH_CPPFLAGS :=
 ARCH_AFLAGS :=
 ARCH_CFLAGS :=
--include arch/$(ARCH)/Makefile
+-include custom/$(ARCH)/Makefile
 
 KBUILD_CFLAGS	+= $(call cc-option,-fno-delete-null-pointer-checks,)
 
