@@ -31,7 +31,7 @@ unexport GREP_OPTIONS
 # their own directory. If in some directory we have a dependency on
 # a file in another dir (which doesn't happen often, but it's often
 # unavoidable when linking the built-in.o targets which finally
-# turn into myapp), we will call a sub make in that other dir, and
+# turn into app), we will call a sub make in that other dir, and
 # after that we are sure that everything which is in that other dir
 # is now up to date.
 #
@@ -263,9 +263,10 @@ AFLAGS_KERNEL	=
 # Needed to be compatible with the O= option
 MYAPPINCLUDE    := \
 		$(if $(KBUILD_SRC), -I$(srctree)/include) \
+        -I$(srctree)/custom/$(ARCH)/include \
 		-Iinclude -include include/generated/autoconf.h
 
-KBUILD_CPPFLAGS := -D__MYAPP__
+KBUILD_CPPFLAGS := 
 
 KBUILD_CFLAGS   := -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs \
 		   -fno-strict-aliasing -fno-common \
@@ -394,7 +395,7 @@ config: scripts_basic outputmakefile FORCE
 
 else
 # ===========================================================================
-# Build targets only - this includes myapp, arch specific targets, clean
+# Build targets only - this includes app, arch specific targets, clean
 # targets and others. In general all targets except *config targets.
 
 # Additional helpers built in scripts/
@@ -431,8 +432,9 @@ endif # $(dot-config)
 # The all: target is the default when no target is given on the
 # command line.
 # This allow a user to issue only 'make' to build the application
-# Defaults to myapp, but the arch makefile usually adds further targets
-all: myapp
+# Defaults to app, but the arch makefile usually adds further targets
+
+include $(srctree)/mks/*.mk
 
 # The arch Makefile can set ARCH_{CPP,A,C}FLAGS to override the default
 # values of the respective KBUILD_* variables
@@ -552,48 +554,10 @@ KBUILD_CPPFLAGS += $(ARCH_CPPFLAGS) $(KCPPFLAGS)
 KBUILD_AFLAGS   += $(ARCH_AFLAGS)   $(KAFLAGS)
 KBUILD_CFLAGS   += $(ARCH_CFLAGS)   $(KCFLAGS)
 
-# Default kernel image to build when no specific target is given.
-# KBUILD_IMAGE may be overruled on the command line or
-# set in the environment
-# Also any assignments in arch/$(ARCH)/Makefile take precedence over
-# this default value
-export KBUILD_IMAGE ?= myapp
-
 #
 # INSTALL_PATH specifies where to place the updated kernel and system map
 # images. Default is /boot, but you can set it to other values
 export	INSTALL_PATH ?= ./install
-
-
-objs-y		:= main
-libs-y		:= lib
-
-myapp-dirs	:= $(objs-y) $(libs-y)
-myapp-objs	:= $(patsubst %,%/built-in.o, $(objs-y))
-myapp-libs	:= $(patsubst %,%/lib.a, $(libs-y))
-myapp-all	:= $(myapp-objs) $(myapp-libs)
-
-quiet_cmd_myapp = LD      $@
-      cmd_myapp = $(CC) $(LDFLAGS) -o $@                          \
-      -Wl,--start-group $(myapp-libs) $(myapp-objs) -Wl,--end-group
-
-myapp: $(myapp-all) FORCE
-	+$(call if_changed,myapp)
-
-# The actual objects are generated when descending,
-# make sure no implicit rule kicks in
-$(sort $(myapp-all)): $(myapp-dirs) ;
-
-# Handle descending into subdirectories listed in $(myapp-dirs)
-# Preset locale variables to speed up the build process. Limit locale
-# tweaks to this spot to avoid wrong language settings when running
-# make menuconfig etc.
-# Error messages still appears in the original language
-
-PHONY += $(myapp-dirs)
-$(myapp-dirs): prepare scripts
-	$(Q)$(MAKE) $(build)=$@
-
 
 
 # Things we need to do before we recursively start building the application
@@ -660,7 +624,6 @@ headerdep:
 
 # Directories & files removed with 'make clean'
 CLEAN_DIRS  +=
-CLEAN_FILES +=	myapp
 
 # Directories & files removed with 'make mrproper'
 MRPROPER_DIRS  += include/config include/generated .tmp_objdiff
@@ -671,7 +634,7 @@ MRPROPER_FILES += .config .config.old .version .old_version \
 #
 clean: rm-dirs  := $(CLEAN_DIRS)
 clean: rm-files := $(CLEAN_FILES)
-clean-dirs      := $(addprefix _clean_, . $(myapp-dirs))
+clean-dirs      += $(addprefix _clean_, .)
 
 PHONY += $(clean-dirs) clean archclean
 $(clean-dirs):
@@ -730,7 +693,7 @@ help:
 	@echo  ''
 	@echo  'Other generic targets:'
 	@echo  '  all		  - Build all targets marked with [*]'
-	@echo  '* myapp		  - Build the application'
+	@echo  '* app		  - Build the application'
 	@echo  '  dir/            - Build all files in dir and below'
 	@echo  '  dir/file.[ois]  - Build specified target only'
 	@echo  '  dir/file.lst    - Build specified mixed source/assembly target only'
@@ -768,13 +731,11 @@ includecheck:
 endif #ifeq ($(config-targets),1)
 endif #ifeq ($(mixed-targets),1)
 
-PHONY += kernelversion image_name
+PHONY += kernelversion
 
 kernelversion:
 	@echo $(KERNELVERSION)
 
-image_name:
-	@echo $(KBUILD_IMAGE)
 
 
 # Single targets

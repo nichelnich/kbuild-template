@@ -6,11 +6,9 @@
  * For additional licensing information see COPYING.myapp
  */
 
-#include <generated/autoconf.h>
 #include <stdio.h>
 #include <my_functions.h>
 
-void debug_of_logging(void);
 
 int main(void)
 {

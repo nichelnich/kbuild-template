@@ -1,0 +1,12 @@
+config CGI_VPN
+	bool "Enable vpn"
+	default y
+	help
+	  Say Y if you want to enable vpn.
+
+config CGI_DEBUG
+	bool "Enable debug"
+	default n
+	help
+	  Say Y if you want to enable informational log message output.
+

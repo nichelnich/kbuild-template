@@ -81,6 +81,19 @@ config DEBUG_INFO_DWARF4
 endmenu
 
 
-source "main/Kconfig"
+menu "server config"
+source "server/Kconfig"
+endmenu
 
-source "lib/Kconfig"
+menu "client config"
+source "client/Kconfig"
+source "custom/common/ui/Kconfig"
+endmenu
+
+menu "slib config"
+source "slib/Kconfig"
+endmenu
+
+menu "web config"
+source "web/Kconfig"
+endmenu

@@ -9,7 +9,6 @@
 #ifndef _LOGMSG_H_
 #define _LOGMSG_H_
 
-#include <generated/autoconf.h>
 
 
 #ifdef CONFIG_LOG_INFO 

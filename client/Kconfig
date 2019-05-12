@@ -1,0 +1,5 @@
+config ENABLE_CF
+	bool "Enable CF options"
+	default y
+	help
+	  Say Y if you want to enable CF functionality.

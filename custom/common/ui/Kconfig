@@ -1,0 +1,17 @@
+choice
+	prompt "ui version"
+	default UI_V_A
+
+config UI_V_A
+	bool "ui version for va"
+	 help
+	  config a version
+	  
+
+config UI_V_B
+	bool "ui version for vb"
+	 help
+	  config B version
+
+endchoice
+

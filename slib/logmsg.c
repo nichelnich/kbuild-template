@@ -6,19 +6,11 @@
  * For additional licensing information see COPYING.myapp
  */
 
-#include <generated/autoconf.h> /* Must be first. */
 #include <stdarg.h>
 #include <stdio.h>
 #include <time.h>
-#include <logmsg.h>
+#include <slib/logmsg.h>
 
-/*!
- * \brief Output a normal log message.
- *
- * \param type Severity of this message.
- * \param fmt  Format string containing conversion specifications of the
- *             following list of parameters.
- */
 #if CONFIG_LOG_ENABLE || !defined(__GNUC__)
 void logmsg(unsigned int type, const char *fmt, ...)
 {
@@ -44,5 +36,3 @@ void logmsg(unsigned int type, const char *fmt, ...)
 }
 #endif
 
-
-/*@}*/
